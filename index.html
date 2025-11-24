@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Enhancer & Career Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Add Markdown parsing for Gemini responses -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Custom animation classes */
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        .slide-up { animation: slideUp 0.5s ease-out; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 3px solid #6366f1; /* Indigo-500 */
+            width: 20px;
+            height: 20px;
+            -webkit-animation: spin 1s linear infinite; /* Safari */
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Markdown Styles */
+        .prose h1 { font-size: 1.5em; font-weight: bold; margin-bottom: 0.5em; }
+        .prose h2 { font-size: 1.25em; font-weight: bold; margin-top: 1em; margin-bottom: 0.5em; }
+        .prose ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 1em; }
+        .prose p { margin-bottom: 1em; }
+        .prose strong { color: #4f46e5; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-indigo-600 text-white p-6 shadow-lg">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <i class="fas fa-robot text-2xl"></i>
+                <h1 class="text-2xl font-bold tracking-tight">Aditya's AI Resume Enhancer</h1>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-6xl mx-auto p-6 w-full">
+        
+        <!-- Input Section -->
+        <div id="inputSection" class="space-y-8 transition-all duration-300">
+            <div class="text-center space-y-2 py-8">
+                <h2 class="text-3xl font-bold text-slate-800">Optimize Your Career Path</h2>
+                <p class="text-slate-600 max-w-2xl mx-auto">
+                    Paste the job description and your resume. We'll analyze keywords locally, then use <strong>Gemini AI</strong> to rewrite your resume, draft a cover letter, and prep you for the interview.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Job Description -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-96 hover:shadow-md transition-shadow">
+                    <div class="bg-slate-100 p-4 border-b border-slate-200 flex items-center text-slate-700 font-semibold">
+                        <i class="fas fa-briefcase mr-2 text-indigo-600"></i>
+                        Job Description (JD)
+                    </div>
+                    <textarea id="jdInput"
+                        class="flex-1 p-4 resize-none focus:outline-none focus:bg-indigo-50/30 transition-colors text-sm leading-relaxed"
+                        placeholder="Paste the Job Description here..."></textarea>
+                </div>
+
+                <!-- Resume -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-96 hover:shadow-md transition-shadow">
+                    <div class="bg-slate-100 p-4 border-b border-slate-200 flex items-center text-slate-700 font-semibold">
+                        <i class="fas fa-file-invoice mr-2 text-indigo-600"></i>
+                        Your Resume
+                    </div>
+                    <textarea id="resumeInput"
+                        class="flex-1 p-4 resize-none focus:outline-none focus:bg-indigo-50/30 transition-colors text-sm leading-relaxed"
+                        placeholder="Paste your Resume text here..."></textarea>
+                </div>
+            </div>
+
+            <!-- Error Message -->
+            <div id="errorMessage" class="hidden bg-red-50 text-red-600 p-4 rounded-lg flex items-center justify-center animate-pulse">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                <span id="errorText">Please fill in both fields.</span>
+            </div>
+
+            <!-- Action Button -->
+            <div class="flex justify-center pb-10">
+                <button id="analyzeBtn" onclick="analyzeResume()" 
+                    class="flex items-center space-x-2 px-8 py-4 rounded-full text-lg font-semibold text-white shadow-lg bg-indigo-600 hover:bg-indigo-700 hover:-translate-y-1 hover:shadow-indigo-500/30 transition-all active:scale-95">
+                    <span id="btnIcon"><i class="fas fa-magic"></i></span>
+                    <span id="btnText">Analyze & Unlock AI Tools</span>
+                    <div id="btnLoader" class="loader hidden" style="border-top-color: white;"></div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Section (Hidden by default) -->
+        <div id="resultSection" class="hidden max-w-5xl mx-auto fade-in slide-up">
+            <button onclick="resetApp()" class="mb-6 text-indigo-600 font-semibold hover:underline flex items-center group">
+                <i class="fas fa-arrow-left mr-2 group-hover:-translate-x-1 transition-transform"></i>
+                Start Over
+            </button>
+
+            <!-- 1. Local Keyword Analysis Score -->
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200 mb-8">
+                <div class="p-8 bg-slate-900 text-white text-center relative overflow-hidden">
+                    <div class="relative z-10">
+                        <h2 class="text-xl font-medium text-slate-300 mb-2">Keyword Match Score</h2>
+                        <div class="text-7xl font-bold flex items-center justify-center tracking-tighter">
+                            <span id="scoreValue">0</span><span class="text-4xl text-indigo-400 ml-1">%</span>
+                        </div>
+                        <p id="suggestionText" class="mt-4 text-indigo-200 font-medium text-lg">Analyzing...</p>
+                    </div>
+                    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full opacity-20 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 blur-3xl"></div>
+                </div>
+                
+                <div class="p-6 border-b border-slate-100">
+                     <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wide mb-3">Missing Keywords</h3>
+                     <div id="keywordsContainer" class="flex flex-wrap gap-2"></div>
+                     <div id="keywordsEmptyState" class="hidden text-green-600 font-medium"><i class="fas fa-check-circle mr-2"></i> All key terms found!</div>
+                </div>
+            </div>
+
+            <!-- 2. Gemini AI Tools Grid -->
+            <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center">
+                <i class="fas fa-sparkles text-yellow-500 mr-3"></i> Gemini AI Power-Ups
+            </h2>
+            
+            <div class="grid md:grid-cols-3 gap-6 mb-12">
+                <!-- Tool 1: Resume Rewriter -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col">
+                    <div class="h-12 w-12 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-xl mb-4">
+                        <i class="fas fa-pen-nib"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-2">Smart Resume Rewriter</h3>
+                    <p class="text-slate-600 text-sm mb-6 flex-grow">
+                        Rewrite your bullet points to target this specific job. Adds action verbs and quantifies results.
+                    </p>
+                    <button onclick="triggerGemini('rewrite')" class="w-full py-2 bg-white border-2 border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-50 transition-colors flex items-center justify-center gap-2">
+                        <span>✨ Auto-Improve</span>
+                    </button>
+                </div>
+
+                <!-- Tool 2: Cover Letter -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col">
+                    <div class="h-12 w-12 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center text-xl mb-4">
+                        <i class="fas fa-envelope-open-text"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-2">Cover Letter Generator</h3>
+                    <p class="text-slate-600 text-sm mb-6 flex-grow">
+                        Draft a persuasive cover letter connecting your unique background to the JD's requirements.
+                    </p>
+                    <button onclick="triggerGemini('coverLetter')" class="w-full py-2 bg-white border-2 border-purple-600 text-purple-600 font-semibold rounded-lg hover:bg-purple-50 transition-colors flex items-center justify-center gap-2">
+                        <span>✨ Write Draft</span>
+                    </button>
+                </div>
+
+                <!-- Tool 3: Interview Prep -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col">
+                    <div class="h-12 w-12 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center text-xl mb-4">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-2">Interview Prep Coach</h3>
+                    <p class="text-slate-600 text-sm mb-6 flex-grow">
+                        Predict 5 tailored interview questions based on your resume gaps and the job description.
+                    </p>
+                    <button onclick="triggerGemini('interview')" class="w-full py-2 bg-white border-2 border-amber-500 text-amber-600 font-semibold rounded-lg hover:bg-amber-50 transition-colors flex items-center justify-center gap-2">
+                        <span>✨ Prep Me</span>
+                    </button>
+                </div>
+
+                <!-- Tool 4: LinkedIn Optimizer (NEW) -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col">
+                    <div class="h-12 w-12 bg-sky-100 text-sky-600 rounded-lg flex items-center justify-center text-xl mb-4">
+                        <i class="fab fa-linkedin"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-2">LinkedIn Optimizer</h3>
+                    <p class="text-slate-600 text-sm mb-6 flex-grow">
+                        Generate a catchy Headline and professional "About" section to attract recruiters.
+                    </p>
+                    <button onclick="triggerGemini('linkedin')" class="w-full py-2 bg-white border-2 border-sky-600 text-sky-600 font-semibold rounded-lg hover:bg-sky-50 transition-colors flex items-center justify-center gap-2">
+                        <span>✨ Optimize Profile</span>
+                    </button>
+                </div>
+
+                <!-- Tool 5: Cold Email Drafter (NEW) -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col">
+                    <div class="h-12 w-12 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center text-xl mb-4">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-2">Cold Email Drafter</h3>
+                    <p class="text-slate-600 text-sm mb-6 flex-grow">
+                        Write a short, punchy email to a recruiter attaching your resume for this specific role.
+                    </p>
+                    <button onclick="triggerGemini('email')" class="w-full py-2 bg-white border-2 border-emerald-600 text-emerald-600 font-semibold rounded-lg hover:bg-emerald-50 transition-colors flex items-center justify-center gap-2">
+                        <span>✨ Draft Email</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- AI Output Area -->
+            <div id="aiOutputSection" class="hidden bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden mb-12 animate-in fade-in slide-in-from-bottom-4">
+                <div class="bg-slate-50 border-b border-slate-200 p-4 flex justify-between items-center">
+                    <h3 id="aiOutputTitle" class="font-bold text-slate-700 flex items-center gap-2">
+                        <!-- Title injected via JS -->
+                    </h3>
+                    <button onclick="document.getElementById('aiOutputSection').classList.add('hidden')" class="text-slate-400 hover:text-slate-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="p-8">
+                    <div id="aiLoading" class="hidden flex flex-col items-center justify-center py-12">
+                        <div class="loader mb-4" style="width: 40px; height: 40px; border-width: 4px;"></div>
+                        <p class="text-slate-500 animate-pulse">Gemini is thinking...</p>
+                    </div>
+                    <div id="aiContent" class="prose max-w-none text-slate-700">
+                        <!-- Content injected via JS -->
+                    </div>
+                    <div id="aiActions" class="mt-6 flex justify-end pt-6 border-t border-slate-100 hidden">
+                        <button onclick="copyToClipboard()" class="px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 text-sm font-medium">
+                            <i class="fas fa-copy mr-2"></i> Copy Text
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 p-6 text-center text-slate-500 text-sm">
+        &copy; 2024 Resume Enhancer AI. Local Analysis + Gemini API.
+    </footer>
+
+    <!-- Logic -->
+    <script>
+        // --- Configuration ---
+        // IMPORTANT: PASTE YOUR GOOGLE GEMINI API KEY HERE
+        const apiKey = "AIzaSyAEBIA6VYkNQ29nR7i84mO86Jo1hxJw7_g"; 
+        const stopWords = new Set(["a", "an", "the", "and", "or", "but", "if", "then", "else", "when", "at", "by", "for", "with", "about", "against", "to", "from", "in", "out", "on", "off", "is", "are", "was", "were", "be", "been", "have", "has", "had"]);
+
+        // --- DOM Elements ---
+        const inputSection = document.getElementById('inputSection');
+        const resultSection = document.getElementById('resultSection');
+        const jdInput = document.getElementById('jdInput');
+        const resumeInput = document.getElementById('resumeInput');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const btnLoader = document.getElementById('btnLoader');
+        const btnText = document.getElementById('btnText');
+        const btnIcon = document.getElementById('btnIcon');
+        const errorMessage = document.getElementById('errorMessage');
+        const scoreValue = document.getElementById('scoreValue');
+        const suggestionText = document.getElementById('suggestionText');
+        const keywordsContainer = document.getElementById('keywordsContainer');
+        
+        // AI DOM Elements
+        const aiOutputSection = document.getElementById('aiOutputSection');
+        const aiOutputTitle = document.getElementById('aiOutputTitle');
+        const aiContent = document.getElementById('aiContent');
+        const aiLoading = document.getElementById('aiLoading');
+        const aiActions = document.getElementById('aiActions');
+
+        // --- Main Functions ---
+
+        async function analyzeResume() {
+            const jd = jdInput.value.trim();
+            const resume = resumeInput.value.trim();
+
+            if (!jd || !resume) {
+                showError("Please provide both a Job Description and a Resume.");
+                return;
+            }
+            hideError();
+            setLoading(true);
+
+            // Simulate local processing delay for UX
+            await new Promise(r => setTimeout(r, 800));
+            
+            // 1. Run Local Keyword Analysis
+            const result = analyzeLocally(jd, resume);
+            displayResults(result);
+            setLoading(false);
+        }
+
+        function analyzeLocally(jdText, resumeText) {
+            const jdKeywords = extractKeywords(jdText);
+            const resumeKeywords = extractKeywords(resumeText);
+            const missing = [...jdKeywords].filter(k => !resumeKeywords.has(k));
+            
+            let score = 0;
+            if (jdKeywords.size > 0) {
+                const matchedCount = jdKeywords.size - missing.length;
+                score = Math.round((matchedCount / jdKeywords.size) * 100);
+            }
+
+            let suggestion = "";
+            if (score < 50) suggestion = "Your resume needs significant alignment. Focus on adding the missing technical skills.";
+            else if (score < 80) suggestion = "Good start! Try incorporating the missing keywords into your 'Skills' or 'Project' sections.";
+            else suggestion = "Excellent match! Your resume aligns well with the job description.";
+
+            return { score, missingKeywords: missing.slice(0, 20), suggestion };
+        }
+
+        // --- Gemini API Logic ---
+
+        async function triggerGemini(mode) {
+            // Check for API Key
+            if(!apiKey) {
+                alert("Please open the index.html file in VS Code and paste your Gemini API Key into the 'apiKey' variable (around line 240)!");
+                return;
+            }
+
+            const jd = jdInput.value;
+            const resume = resumeInput.value;
+
+            // UI Setup
+            aiOutputSection.classList.remove('hidden');
+            aiLoading.classList.remove('hidden');
+            aiContent.innerHTML = '';
+            aiActions.classList.add('hidden');
+            
+            // Scroll to output
+            aiOutputSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            let prompt = "";
+            let title = "";
+            let icon = "";
+
+            if (mode === 'rewrite') {
+                title = "Smart Resume Rewrite";
+                icon = '<i class="fas fa-pen-nib text-blue-600"></i>';
+                prompt = `You are an expert Resume Writer.
+                Job Description: "${jd.substring(0, 3000)}"
+                Current Resume: "${resume.substring(0, 3000)}"
+                
+                Task: Rewrite the "Experience" or "Projects" section of the resume to better match the Job Description. 
+                1. Use strong action verbs.
+                2. Quantify results where possible (add placeholders like [X]% if needed).
+                3. Incorporate relevant keywords from the JD naturally.
+                Output Format: Markdown.`;
+            } else if (mode === 'coverLetter') {
+                title = "Tailored Cover Letter";
+                icon = '<i class="fas fa-envelope-open-text text-purple-600"></i>';
+                prompt = `You are a Career Coach. Write a persuasive cover letter for this candidate.
+                Job Description: "${jd.substring(0, 3000)}"
+                Resume: "${resume.substring(0, 3000)}"
+                
+                Task: Write a cover letter.
+                1. Hook the reader immediately.
+                2. Connect specific resume achievements to JD requirements.
+                3. Keep it professional but energetic.
+                Output Format: Markdown.`;
+            } else if (mode === 'interview') {
+                title = "Interview Prep Questions";
+                icon = '<i class="fas fa-user-tie text-amber-600"></i>';
+                prompt = `You are a Hiring Manager. Generate 5 interview questions for this candidate.
+                Job Description: "${jd.substring(0, 3000)}"
+                Resume: "${resume.substring(0, 3000)}"
+                
+                Task:
+                1. Identify gaps between the resume and JD.
+                2. Ask 2 technical questions based on the JD's required skills.
+                3. Ask 2 behavioral questions based on the resume's experience.
+                4. Ask 1 "wildcard" question about a specific project in the resume.
+                Provide brief "Ideal Answer Tips" for each.
+                Output Format: Markdown.`;
+            } else if (mode === 'linkedin') {
+                title = "LinkedIn Profile Optimizer";
+                icon = '<i class="fab fa-linkedin text-sky-600"></i>';
+                prompt = `You are a LinkedIn Personal Branding Expert.
+                Resume: "${resume.substring(0, 3000)}"
+                
+                Task:
+                1. Write a catchy, SEO-optimized Headline (under 220 chars).
+                2. Write a professional "About" section (max 3 short paragraphs) that tells a compelling career story based on the resume.
+                3. List 5 top skills to pin to the profile.
+                Output Format: Markdown.`;
+            } else if (mode === 'email') {
+                title = "Cold Email Drafter";
+                icon = '<i class="fas fa-paper-plane text-emerald-600"></i>';
+                prompt = `You are a Career Coach. Write a cold email to a recruiter for this job.
+                Job Description: "${jd.substring(0, 3000)}"
+                Resume: "${resume.substring(0, 3000)}"
+                
+                Task:
+                1. Write an attention-grabbing Subject Line.
+                2. Write a short, punchy body (under 150 words) highlighting the best match between the candidate and the role.
+                3. Include a call to action.
+                Output Format: Markdown.`;
+            }
+
+            aiOutputTitle.innerHTML = `${icon} ${title}`;
+
+            try {
+                const responseText = await callGeminiAPI(prompt);
+                aiLoading.classList.add('hidden');
+                // Parse Markdown using marked.js
+                aiContent.innerHTML = marked.parse(responseText);
+                aiActions.classList.remove('hidden');
+            } catch (error) {
+                aiLoading.classList.add('hidden');
+                aiContent.innerHTML = `<div class="text-red-500 p-4 bg-red-50 rounded-lg">
+                    <i class="fas fa-exclamation-triangle mr-2"></i> Error generating content: ${error.message}. Please check your API Key and try again.
+                </div>`;
+            }
+        }
+
+        async function callGeminiAPI(prompt) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            
+            const payload = {
+                contents: [{
+                    parts: [{ text: prompt }]
+                }]
+            };
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error(`API Error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data.candidates[0].content.parts[0].text;
+        }
+
+        // --- Utilities ---
+
+        function extractKeywords(text) {
+            const words = text.toLowerCase().replace(/[^a-z0-9\s]/g, '').split(/\s+/);
+            const keywords = new Set();
+            words.forEach(w => {
+                if (w.length > 2 && !stopWords.has(w)) keywords.add(w);
+            });
+            return keywords;
+        }
+
+        function displayResults(data) {
+            inputSection.classList.add('hidden');
+            resultSection.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            animateValue(scoreValue, 0, data.score, 1000);
+            suggestionText.textContent = data.suggestion;
+            keywordsContainer.innerHTML = '';
+
+            const emptyState = document.getElementById('keywordsEmptyState');
+            if (data.missingKeywords.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                data.missingKeywords.forEach(word => {
+                    const chip = document.createElement('span');
+                    chip.className = "px-3 py-1 bg-red-50 text-red-600 border border-red-100 rounded-full text-sm font-medium animate-in fade-in";
+                    chip.textContent = word;
+                    keywordsContainer.appendChild(chip);
+                });
+            }
+        }
+
+        function resetApp() {
+            resultSection.classList.add('hidden');
+            inputSection.classList.remove('hidden');
+            aiOutputSection.classList.add('hidden');
+        }
+
+        function copyToClipboard() {
+            const text = aiContent.innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = aiActions.querySelector('button');
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check mr-2"></i> Copied!';
+                btn.classList.replace('bg-slate-800', 'bg-green-600');
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.classList.replace('bg-green-600', 'bg-slate-800');
+                }, 2000);
+            });
+        }
+
+        function setLoading(isLoading) {
+            analyzeBtn.disabled = isLoading;
+            if (isLoading) {
+                btnText.classList.add('hidden');
+                btnIcon.classList.add('hidden');
+                btnLoader.classList.remove('hidden');
+                analyzeBtn.classList.add('bg-slate-400', 'cursor-not-allowed');
+                analyzeBtn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+            } else {
+                btnText.classList.remove('hidden');
+                btnIcon.classList.remove('hidden');
+                btnLoader.classList.add('hidden');
+                analyzeBtn.classList.remove('bg-slate-400', 'cursor-not-allowed');
+                analyzeBtn.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+            }
+        }
+
+        function showError(msg) { errorMessage.classList.remove('hidden'); document.getElementById('errorText').textContent = msg; }
+        function hideError() { errorMessage.classList.add('hidden'); }
+        function animateValue(obj, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = Math.floor(progress * (end - start) + start);
+                if (progress < 1) window.requestAnimationFrame(step);
+            };
+            window.requestAnimationFrame(step);
+        }
+    </script>
+</body>
+</html>
