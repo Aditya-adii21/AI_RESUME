@@ -14,3 +14,14 @@ AI Resume Enhancer is an intelligent tool designed to help job seekers optimize 
 🔑 Keyword Extraction: Highlights missing technical and soft skills required for the job.
 
 💡 Smart Recommendations: Provides personalized tips to improve formatting, structure, and impact.
+
+
+🚀 Future Roadmap
+
+[ ] Add support for "Cover Letter Generation" based on the resume.
+
+[ ] Implement different resume templates for downloadable PDF output.
+
+[ ] Add LinkedIn profile analysis.
+
+[ ] User authentication to save history.
