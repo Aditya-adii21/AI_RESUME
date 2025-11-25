@@ -6,13 +6,13 @@
     <title>AI Resume Enhancer & Career Assistant</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <!-- Add Markdown parsing for Gemini responses -->
+    
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
         
-        /* Custom animation classes */
+        
         .fade-in { animation: fadeIn 0.5s ease-in; }
         .slide-up { animation: slideUp 0.5s ease-out; }
         
@@ -41,7 +41,7 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Markdown Styles */
+        
         .prose h1 { font-size: 1.5em; font-weight: bold; margin-bottom: 0.5em; }
         .prose h2 { font-size: 1.25em; font-weight: bold; margin-top: 1em; margin-bottom: 0.5em; }
         .prose ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 1em; }
@@ -51,7 +51,7 @@
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
 
-    <!-- Header -->
+    
     <header class="bg-indigo-600 text-white p-6 shadow-lg">
         <div class="max-w-6xl mx-auto flex items-center justify-between">
             <div class="flex items-center space-x-3">
@@ -61,10 +61,10 @@
         </div>
     </header>
 
-    <!-- Main Content -->
+    
     <main class="flex-grow max-w-6xl mx-auto p-6 w-full">
         
-        <!-- Input Section -->
+        
         <div id="inputSection" class="space-y-8 transition-all duration-300">
             <div class="text-center space-y-2 py-8">
                 <h2 class="text-3xl font-bold text-slate-800">Optimize Your Career Path</h2>
@@ -74,7 +74,7 @@
             </div>
 
             <div class="grid md:grid-cols-2 gap-8">
-                <!-- Job Description -->
+                
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-96 hover:shadow-md transition-shadow">
                     <div class="bg-slate-100 p-4 border-b border-slate-200 flex items-center text-slate-700 font-semibold">
                         <i class="fas fa-briefcase mr-2 text-indigo-600"></i>
@@ -85,7 +85,7 @@
                         placeholder="Paste the Job Description here..."></textarea>
                 </div>
 
-                <!-- Resume -->
+                
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-96 hover:shadow-md transition-shadow">
                     <div class="bg-slate-100 p-4 border-b border-slate-200 flex items-center text-slate-700 font-semibold">
                         <i class="fas fa-file-invoice mr-2 text-indigo-600"></i>
@@ -97,13 +97,13 @@
                 </div>
             </div>
 
-            <!-- Error Message -->
+            
             <div id="errorMessage" class="hidden bg-red-50 text-red-600 p-4 rounded-lg flex items-center justify-center animate-pulse">
                 <i class="fas fa-exclamation-circle mr-2"></i>
                 <span id="errorText">Please fill in both fields.</span>
             </div>
 
-            <!-- Action Button -->
+            
             <div class="flex justify-center pb-10">
                 <button id="analyzeBtn" onclick="analyzeResume()" 
                     class="flex items-center space-x-2 px-8 py-4 rounded-full text-lg font-semibold text-white shadow-lg bg-indigo-600 hover:bg-indigo-700 hover:-translate-y-1 hover:shadow-indigo-500/30 transition-all active:scale-95">
@@ -114,14 +114,14 @@
             </div>
         </div>
 
-        <!-- Results Section (Hidden by default) -->
+        
         <div id="resultSection" class="hidden max-w-5xl mx-auto fade-in slide-up">
             <button onclick="resetApp()" class="mb-6 text-indigo-600 font-semibold hover:underline flex items-center group">
                 <i class="fas fa-arrow-left mr-2 group-hover:-translate-x-1 transition-transform"></i>
                 Start Over
             </button>
 
-            <!-- 1. Local Keyword Analysis Score -->
+            
             <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200 mb-8">
                 <div class="p-8 bg-slate-900 text-white text-center relative overflow-hidden">
                     <div class="relative z-10">
@@ -141,13 +141,13 @@
                 </div>
             </div>
 
-            <!-- 2. Gemini AI Tools Grid -->
+            
             <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center">
                 <i class="fas fa-sparkles text-yellow-500 mr-3"></i> Gemini AI Power-Ups
             </h2>
             
             <div class="grid md:grid-cols-3 gap-6 mb-12">
-                <!-- Tool 1: Resume Rewriter -->
+                
                 <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col">
                     <div class="h-12 w-12 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-xl mb-4">
                         <i class="fas fa-pen-nib"></i>
@@ -161,7 +161,7 @@
                     </button>
                 </div>
 
-                <!-- Tool 2: Cover Letter -->
+                
                 <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col">
                     <div class="h-12 w-12 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center text-xl mb-4">
                         <i class="fas fa-envelope-open-text"></i>
@@ -175,7 +175,7 @@
                     </button>
                 </div>
 
-                <!-- Tool 3: Interview Prep -->
+                
                 <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col">
                     <div class="h-12 w-12 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center text-xl mb-4">
                         <i class="fas fa-user-tie"></i>
@@ -189,7 +189,7 @@
                     </button>
                 </div>
 
-                <!-- Tool 4: LinkedIn Optimizer (NEW) -->
+                
                 <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col">
                     <div class="h-12 w-12 bg-sky-100 text-sky-600 rounded-lg flex items-center justify-center text-xl mb-4">
                         <i class="fab fa-linkedin"></i>
@@ -203,7 +203,7 @@
                     </button>
                 </div>
 
-                <!-- Tool 5: Cold Email Drafter (NEW) -->
+                
                 <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col">
                     <div class="h-12 w-12 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center text-xl mb-4">
                         <i class="fas fa-paper-plane"></i>
@@ -218,11 +218,11 @@
                 </div>
             </div>
 
-            <!-- AI Output Area -->
+            
             <div id="aiOutputSection" class="hidden bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden mb-12 animate-in fade-in slide-in-from-bottom-4">
                 <div class="bg-slate-50 border-b border-slate-200 p-4 flex justify-between items-center">
                     <h3 id="aiOutputTitle" class="font-bold text-slate-700 flex items-center gap-2">
-                        <!-- Title injected via JS -->
+                        
                     </h3>
                     <button onclick="document.getElementById('aiOutputSection').classList.add('hidden')" class="text-slate-400 hover:text-slate-600">
                         <i class="fas fa-times"></i>
@@ -234,7 +234,7 @@
                         <p class="text-slate-500 animate-pulse">Gemini is thinking...</p>
                     </div>
                     <div id="aiContent" class="prose max-w-none text-slate-700">
-                        <!-- Content injected via JS -->
+                        
                     </div>
                     <div id="aiActions" class="mt-6 flex justify-end pt-6 border-t border-slate-100 hidden">
                         <button onclick="copyToClipboard()" class="px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 text-sm font-medium">
@@ -252,14 +252,12 @@
         &copy; 2024 Resume Enhancer AI. Local Analysis + Gemini API.
     </footer>
 
-    <!-- Logic -->
     <script>
-        // --- Configuration ---
-        // IMPORTANT: PASTE YOUR GOOGLE GEMINI API KEY HERE
+        
         const apiKey = "AIzaSyAEBIA6VYkNQ29nR7i84mO86Jo1hxJw7_g"; 
         const stopWords = new Set(["a", "an", "the", "and", "or", "but", "if", "then", "else", "when", "at", "by", "for", "with", "about", "against", "to", "from", "in", "out", "on", "off", "is", "are", "was", "were", "be", "been", "have", "has", "had"]);
 
-        // --- DOM Elements ---
+        
         const inputSection = document.getElementById('inputSection');
         const resultSection = document.getElementById('resultSection');
         const jdInput = document.getElementById('jdInput');
@@ -273,14 +271,14 @@
         const suggestionText = document.getElementById('suggestionText');
         const keywordsContainer = document.getElementById('keywordsContainer');
         
-        // AI DOM Elements
+        
         const aiOutputSection = document.getElementById('aiOutputSection');
         const aiOutputTitle = document.getElementById('aiOutputTitle');
         const aiContent = document.getElementById('aiContent');
         const aiLoading = document.getElementById('aiLoading');
         const aiActions = document.getElementById('aiActions');
 
-        // --- Main Functions ---
+        
 
         async function analyzeResume() {
             const jd = jdInput.value.trim();
@@ -293,10 +291,10 @@
             hideError();
             setLoading(true);
 
-            // Simulate local processing delay for UX
+            
             await new Promise(r => setTimeout(r, 800));
             
-            // 1. Run Local Keyword Analysis
+            
             const result = analyzeLocally(jd, resume);
             displayResults(result);
             setLoading(false);
@@ -321,10 +319,10 @@
             return { score, missingKeywords: missing.slice(0, 20), suggestion };
         }
 
-        // --- Gemini API Logic ---
+        
 
         async function triggerGemini(mode) {
-            // Check for API Key
+           
             if(!apiKey) {
                 alert("Please open the index.html file in VS Code and paste your Gemini API Key into the 'apiKey' variable (around line 240)!");
                 return;
@@ -333,13 +331,13 @@
             const jd = jdInput.value;
             const resume = resumeInput.value;
 
-            // UI Setup
+            
             aiOutputSection.classList.remove('hidden');
             aiLoading.classList.remove('hidden');
             aiContent.innerHTML = '';
             aiActions.classList.add('hidden');
             
-            // Scroll to output
+            
             aiOutputSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
             let prompt = "";
@@ -533,4 +531,5 @@
         }
     </script>
 </body>
+
 </html>
