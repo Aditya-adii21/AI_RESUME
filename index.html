@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Resume Enhancer & Career Assistant</title>
+    <title>Aditya's AI Resume Enhancer & Career Assistant</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    
+    <!-- Add Markdown parsing for Gemini responses -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
         
-        
+        /* Custom animation classes */
         .fade-in { animation: fadeIn 0.5s ease-in; }
         .slide-up { animation: slideUp 0.5s ease-out; }
         
@@ -41,7 +41,7 @@
             100% { transform: rotate(360deg); }
         }
 
-        
+        /* Markdown Styles */
         .prose h1 { font-size: 1.5em; font-weight: bold; margin-bottom: 0.5em; }
         .prose h2 { font-size: 1.25em; font-weight: bold; margin-top: 1em; margin-bottom: 0.5em; }
         .prose ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 1em; }
@@ -51,7 +51,7 @@
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
 
-    
+    <!-- Header -->
     <header class="bg-indigo-600 text-white p-6 shadow-lg">
         <div class="max-w-6xl mx-auto flex items-center justify-between">
             <div class="flex items-center space-x-3">
@@ -61,10 +61,10 @@
         </div>
     </header>
 
-    
+    <!-- Main Content -->
     <main class="flex-grow max-w-6xl mx-auto p-6 w-full">
         
-        
+        <!-- Input Section -->
         <div id="inputSection" class="space-y-8 transition-all duration-300">
             <div class="text-center space-y-2 py-8">
                 <h2 class="text-3xl font-bold text-slate-800">Optimize Your Career Path</h2>
@@ -74,7 +74,7 @@
             </div>
 
             <div class="grid md:grid-cols-2 gap-8">
-                
+                <!-- Job Description -->
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-96 hover:shadow-md transition-shadow">
                     <div class="bg-slate-100 p-4 border-b border-slate-200 flex items-center text-slate-700 font-semibold">
                         <i class="fas fa-briefcase mr-2 text-indigo-600"></i>
@@ -85,7 +85,7 @@
                         placeholder="Paste the Job Description here..."></textarea>
                 </div>
 
-                
+                <!-- Resume -->
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-96 hover:shadow-md transition-shadow">
                     <div class="bg-slate-100 p-4 border-b border-slate-200 flex items-center text-slate-700 font-semibold">
                         <i class="fas fa-file-invoice mr-2 text-indigo-600"></i>
@@ -97,13 +97,13 @@
                 </div>
             </div>
 
-            
+            <!-- Error Message -->
             <div id="errorMessage" class="hidden bg-red-50 text-red-600 p-4 rounded-lg flex items-center justify-center animate-pulse">
                 <i class="fas fa-exclamation-circle mr-2"></i>
                 <span id="errorText">Please fill in both fields.</span>
             </div>
 
-            
+            <!-- Action Button -->
             <div class="flex justify-center pb-10">
                 <button id="analyzeBtn" onclick="analyzeResume()" 
                     class="flex items-center space-x-2 px-8 py-4 rounded-full text-lg font-semibold text-white shadow-lg bg-indigo-600 hover:bg-indigo-700 hover:-translate-y-1 hover:shadow-indigo-500/30 transition-all active:scale-95">
@@ -114,14 +114,14 @@
             </div>
         </div>
 
-        
+        <!-- Results Section (Hidden by default) -->
         <div id="resultSection" class="hidden max-w-5xl mx-auto fade-in slide-up">
             <button onclick="resetApp()" class="mb-6 text-indigo-600 font-semibold hover:underline flex items-center group">
                 <i class="fas fa-arrow-left mr-2 group-hover:-translate-x-1 transition-transform"></i>
                 Start Over
             </button>
 
-            
+            <!-- 1. Local Keyword Analysis Score -->
             <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200 mb-8">
                 <div class="p-8 bg-slate-900 text-white text-center relative overflow-hidden">
                     <div class="relative z-10">
@@ -141,13 +141,13 @@
                 </div>
             </div>
 
-            
+            <!-- 2. Gemini AI Tools Grid -->
             <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center">
                 <i class="fas fa-sparkles text-yellow-500 mr-3"></i> Gemini AI Power-Ups
             </h2>
             
             <div class="grid md:grid-cols-3 gap-6 mb-12">
-                
+                <!-- Tool 1: Resume Rewriter -->
                 <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col">
                     <div class="h-12 w-12 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-xl mb-4">
                         <i class="fas fa-pen-nib"></i>
@@ -161,7 +161,7 @@
                     </button>
                 </div>
 
-                
+                <!-- Tool 2: Cover Letter -->
                 <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col">
                     <div class="h-12 w-12 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center text-xl mb-4">
                         <i class="fas fa-envelope-open-text"></i>
@@ -175,7 +175,7 @@
                     </button>
                 </div>
 
-                
+                <!-- Tool 3: Interview Prep -->
                 <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col">
                     <div class="h-12 w-12 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center text-xl mb-4">
                         <i class="fas fa-user-tie"></i>
@@ -189,7 +189,7 @@
                     </button>
                 </div>
 
-                
+                <!-- Tool 4: LinkedIn Optimizer -->
                 <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col">
                     <div class="h-12 w-12 bg-sky-100 text-sky-600 rounded-lg flex items-center justify-center text-xl mb-4">
                         <i class="fab fa-linkedin"></i>
@@ -203,7 +203,7 @@
                     </button>
                 </div>
 
-                
+                <!-- Tool 5: Cold Email Drafter -->
                 <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col">
                     <div class="h-12 w-12 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center text-xl mb-4">
                         <i class="fas fa-paper-plane"></i>
@@ -216,13 +216,41 @@
                         <span>✨ Draft Email</span>
                     </button>
                 </div>
+
+                <!-- Tool 6: Skill Gap Learning Plan -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col">
+                    <div class="h-12 w-12 bg-rose-100 text-rose-600 rounded-lg flex items-center justify-center text-xl mb-4">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-2">Skill Gap Learning Plan</h3>
+                    <p class="text-slate-600 text-sm mb-6 flex-grow">
+                        Get a customized study plan with key topics and project ideas to bridge your skill gaps.
+                    </p>
+                    <button onclick="triggerGemini('learning')" class="w-full py-2 bg-white border-2 border-rose-600 text-rose-600 font-semibold rounded-lg hover:bg-rose-50 transition-colors flex items-center justify-center gap-2">
+                        <span>✨ Create Plan</span>
+                    </button>
+                </div>
+
+                <!-- Tool 7: Salary Negotiator -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col">
+                    <div class="h-12 w-12 bg-teal-100 text-teal-600 rounded-lg flex items-center justify-center text-xl mb-4">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-2">Salary Negotiator</h3>
+                    <p class="text-slate-600 text-sm mb-6 flex-grow">
+                        Generate a confident, professional script to negotiate a higher salary offer.
+                    </p>
+                    <button onclick="triggerGemini('negotiation')" class="w-full py-2 bg-white border-2 border-teal-600 text-teal-600 font-semibold rounded-lg hover:bg-teal-50 transition-colors flex items-center justify-center gap-2">
+                        <span>✨ Write Script</span>
+                    </button>
+                </div>
             </div>
 
-            
+            <!-- AI Output Area -->
             <div id="aiOutputSection" class="hidden bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden mb-12 animate-in fade-in slide-in-from-bottom-4">
                 <div class="bg-slate-50 border-b border-slate-200 p-4 flex justify-between items-center">
                     <h3 id="aiOutputTitle" class="font-bold text-slate-700 flex items-center gap-2">
-                        
+                        <!-- Title injected via JS -->
                     </h3>
                     <button onclick="document.getElementById('aiOutputSection').classList.add('hidden')" class="text-slate-400 hover:text-slate-600">
                         <i class="fas fa-times"></i>
@@ -234,7 +262,7 @@
                         <p class="text-slate-500 animate-pulse">Gemini is thinking...</p>
                     </div>
                     <div id="aiContent" class="prose max-w-none text-slate-700">
-                        
+                        <!-- Content injected via JS -->
                     </div>
                     <div id="aiActions" class="mt-6 flex justify-end pt-6 border-t border-slate-100 hidden">
                         <button onclick="copyToClipboard()" class="px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 text-sm font-medium">
@@ -252,12 +280,15 @@
         &copy; 2024 Resume Enhancer AI. Local Analysis + Gemini API.
     </footer>
 
+    <!-- Logic -->
     <script>
+        // --- Configuration ---
+        // IMPORTANT: PASTE YOUR GOOGLE GEMINI API KEY BELOW IN THE QUOTES
+        const apiKey = "AIzaSyCvjW_yZOyqwnUFfbzv2d6jK6xdagfibgM"; 
         
-        const apiKey = "AIzaSyAEBIA6VYkNQ29nR7i84mO86Jo1hxJw7_g"; 
         const stopWords = new Set(["a", "an", "the", "and", "or", "but", "if", "then", "else", "when", "at", "by", "for", "with", "about", "against", "to", "from", "in", "out", "on", "off", "is", "are", "was", "were", "be", "been", "have", "has", "had"]);
 
-        
+        // --- DOM Elements ---
         const inputSection = document.getElementById('inputSection');
         const resultSection = document.getElementById('resultSection');
         const jdInput = document.getElementById('jdInput');
@@ -271,14 +302,14 @@
         const suggestionText = document.getElementById('suggestionText');
         const keywordsContainer = document.getElementById('keywordsContainer');
         
-        
+        // AI DOM Elements
         const aiOutputSection = document.getElementById('aiOutputSection');
         const aiOutputTitle = document.getElementById('aiOutputTitle');
         const aiContent = document.getElementById('aiContent');
         const aiLoading = document.getElementById('aiLoading');
         const aiActions = document.getElementById('aiActions');
 
-        
+        // --- Main Functions ---
 
         async function analyzeResume() {
             const jd = jdInput.value.trim();
@@ -291,10 +322,10 @@
             hideError();
             setLoading(true);
 
-            
+            // Simulate local processing delay for UX
             await new Promise(r => setTimeout(r, 800));
             
-            
+            // 1. Run Local Keyword Analysis
             const result = analyzeLocally(jd, resume);
             displayResults(result);
             setLoading(false);
@@ -319,37 +350,48 @@
             return { score, missingKeywords: missing.slice(0, 20), suggestion };
         }
 
-        
+        // --- Gemini API Logic ---
 
         async function triggerGemini(mode) {
-           
-            if(!apiKey) {
-                alert("Please open the index.html file in VS Code and paste your Gemini API Key into the 'apiKey' variable (around line 240)!");
+            // Check for API Key
+            if(apiKey === "AIzaSyCDcKOmsEdi_BikY1bjBKujadwcd_IOmt4" || !apiKey) {
+                alert("Please open the index.html file in VS Code and paste your Gemini API Key into the 'apiKey' variable (around line 257)!");
                 return;
             }
 
+            // CRITICAL FIX: Grab values inside the function call, not global scope
             const jd = jdInput.value;
             const resume = resumeInput.value;
 
-            
+            // Check if inputs are empty
+            if (!jd || !resume) {
+                alert("Please paste both a Job Description and Resume before using AI tools.");
+                return;
+            }
+
+            // UI Setup
             aiOutputSection.classList.remove('hidden');
             aiLoading.classList.remove('hidden');
             aiContent.innerHTML = '';
             aiActions.classList.add('hidden');
             
-            
+            // Scroll to output
             aiOutputSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
             let prompt = "";
             let title = "";
             let icon = "";
 
+            // Truncate input to prevent token overflow, but generous limit
+            const safeJd = jd.substring(0, 10000);
+            const safeResume = resume.substring(0, 10000);
+
             if (mode === 'rewrite') {
                 title = "Smart Resume Rewrite";
                 icon = '<i class="fas fa-pen-nib text-blue-600"></i>';
                 prompt = `You are an expert Resume Writer.
-                Job Description: "${jd.substring(0, 3000)}"
-                Current Resume: "${resume.substring(0, 3000)}"
+                Job Description: "${safeJd}"
+                Current Resume: "${safeResume}"
                 
                 Task: Rewrite the "Experience" or "Projects" section of the resume to better match the Job Description. 
                 1. Use strong action verbs.
@@ -360,8 +402,8 @@
                 title = "Tailored Cover Letter";
                 icon = '<i class="fas fa-envelope-open-text text-purple-600"></i>';
                 prompt = `You are a Career Coach. Write a persuasive cover letter for this candidate.
-                Job Description: "${jd.substring(0, 3000)}"
-                Resume: "${resume.substring(0, 3000)}"
+                Job Description: "${safeJd}"
+                Resume: "${safeResume}"
                 
                 Task: Write a cover letter.
                 1. Hook the reader immediately.
@@ -372,8 +414,8 @@
                 title = "Interview Prep Questions";
                 icon = '<i class="fas fa-user-tie text-amber-600"></i>';
                 prompt = `You are a Hiring Manager. Generate 5 interview questions for this candidate.
-                Job Description: "${jd.substring(0, 3000)}"
-                Resume: "${resume.substring(0, 3000)}"
+                Job Description: "${safeJd}"
+                Resume: "${safeResume}"
                 
                 Task:
                 1. Identify gaps between the resume and JD.
@@ -386,7 +428,7 @@
                 title = "LinkedIn Profile Optimizer";
                 icon = '<i class="fab fa-linkedin text-sky-600"></i>';
                 prompt = `You are a LinkedIn Personal Branding Expert.
-                Resume: "${resume.substring(0, 3000)}"
+                Resume: "${safeResume}"
                 
                 Task:
                 1. Write a catchy, SEO-optimized Headline (under 220 chars).
@@ -397,13 +439,39 @@
                 title = "Cold Email Drafter";
                 icon = '<i class="fas fa-paper-plane text-emerald-600"></i>';
                 prompt = `You are a Career Coach. Write a cold email to a recruiter for this job.
-                Job Description: "${jd.substring(0, 3000)}"
-                Resume: "${resume.substring(0, 3000)}"
+                Job Description: "${safeJd}"
+                Resume: "${safeResume}"
                 
                 Task:
                 1. Write an attention-grabbing Subject Line.
                 2. Write a short, punchy body (under 150 words) highlighting the best match between the candidate and the role.
                 3. Include a call to action.
+                Output Format: Markdown.`;
+            } else if (mode === 'learning') {
+                title = "Skill Gap Learning Plan";
+                icon = '<i class="fas fa-graduation-cap text-rose-600"></i>';
+                prompt = `You are a Technical Mentor.
+                Job Description: "${safeJd}"
+                Resume: "${safeResume}"
+                
+                Task: Identify 3 key technical skills the candidate is missing from the JD.
+                For each skill:
+                1. Explain why it matters for this role.
+                2. Recommend 3-5 specific topics/concepts to study.
+                3. Suggest a small weekend project idea to practice this skill.
+                Output Format: Markdown.`;
+            } else if (mode === 'negotiation') {
+                title = "Salary Negotiation Script";
+                icon = '<i class="fas fa-hand-holding-usd text-teal-600"></i>';
+                prompt = `You are a Negotiation Coach.
+                Job Description: "${safeJd}"
+                Resume: "${safeResume}"
+                
+                Task: Draft a professional email/script to negotiate a higher salary after receiving an offer.
+                1. Acknowledge and thank them for the offer.
+                2. Reiterate enthusiasm for the role.
+                3. Justify the request based on specific skills/experience (reference the resume matches).
+                4. Keep the tone professional, not aggressive.
                 Output Format: Markdown.`;
             }
 
@@ -412,19 +480,32 @@
             try {
                 const responseText = await callGeminiAPI(prompt);
                 aiLoading.classList.add('hidden');
-                // Parse Markdown using marked.js
-                aiContent.innerHTML = marked.parse(responseText);
+                
+                // Robust Markdown parsing
+                if (typeof marked !== 'undefined') {
+                    aiContent.innerHTML = marked.parse(responseText);
+                } else {
+                    // Fallback if marked.js fails to load
+                    aiContent.innerHTML = `<pre class="whitespace-pre-wrap font-sans">${responseText}</pre>`;
+                }
+                
                 aiActions.classList.remove('hidden');
             } catch (error) {
                 aiLoading.classList.add('hidden');
-                aiContent.innerHTML = `<div class="text-red-500 p-4 bg-red-50 rounded-lg">
-                    <i class="fas fa-exclamation-triangle mr-2"></i> Error generating content: ${error.message}. Please check your API Key and try again.
+                aiContent.innerHTML = `<div class="text-red-500 p-4 bg-red-50 rounded-lg border border-red-200">
+                    <div class="font-bold flex items-center gap-2"><i class="fas fa-exclamation-triangle"></i> AI Generation Failed</div>
+                    <div class="mt-2 text-sm text-red-700">${error.message}</div>
+                    <div class="mt-2 text-xs text-red-600 bg-red-50 p-2 rounded">If the error is 400, your Key might be valid but restricted, or the input text is too long.</div>
                 </div>`;
             }
         }
 
         async function callGeminiAPI(prompt) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            // Ensure clean key (remove spaces)
+            const cleanKey = apiKey.trim();
+            
+            // Updated model to gemini-2.5-flash-preview-09-2025 for environment compatibility
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${cleanKey}`;
             
             const payload = {
                 contents: [{
@@ -439,7 +520,18 @@
             });
 
             if (!response.ok) {
-                throw new Error(`API Error: ${response.status}`);
+                // Try to parse the error details from Google
+                let errorMsg = `API Error: ${response.status}`;
+                try {
+                    const errorData = await response.json();
+                    console.error("Gemini API Error Detail:", errorData); // Log to console for debugging
+                    if (errorData.error && errorData.error.message) {
+                        errorMsg += ` - ${errorData.error.message}`;
+                    }
+                } catch (e) {
+                    // ignore if json parse fails
+                }
+                throw new Error(errorMsg);
             }
 
             const data = await response.json();
@@ -531,5 +623,4 @@
         }
     </script>
 </body>
-
 </html>
